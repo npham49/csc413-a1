@@ -1,0 +1,20 @@
+{
+  "name": "arduino-button-reader",
+  "version": "1.0.0",
+  "description": "Node.js script to read Arduino button input",
+  "main": "buttonReader.js",
+  "dependencies": {
+    "@serialport/parser-readline": "^10.5.0",
+    "serialport": "^10.5.0"
+  },
+  "scripts": {
+    "start": "npx tsx buttonReader.ts",
+    "start:watch": "npx tsx --watch buttonReader.ts"
+  },
+  "devDependencies": {
+    "@types/serialport": "^10.2.0",
+    "typescript": "^5.8.3"
+  },
+  "author": "",
+  "license": "ISC"
+}
