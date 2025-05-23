@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import './assets/Orbit.css';
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --background: #00000;
+    --foreground: #fffff;
+  }
+} */
+
+body {
+  /* color: var(--foreground);
+  background: var(--background); */
+  font-family: 'Orbit', sans-serif;;
+}
