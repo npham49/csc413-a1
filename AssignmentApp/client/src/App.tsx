@@ -1,5 +1,5 @@
 // Complete React Component Example using shadcn/ui
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,7 @@ import { T9_KEYPAD } from "./lib/T9Helper";
 import "./App.css";
 import { Button } from "./components/ui/button";
 import { DeleteIcon } from "lucide-react";
+import { socket } from "./lib/socket";
 export default function App() {
   const {
     input,
@@ -16,14 +17,27 @@ export default function App() {
     setSelectedIndex,
     isOpen,
     handleInputChange,
-    selectSuggestion,
     clearInput,
     t9Helper,
+    appendInput,
+    deleteLatestDigit,
+    moveSelectionUp,
+    moveSelectionDown,
+    clearSelection,
   } = useT9Input();
 
   const [output, setOutput] = useState("");
+  const outputRef = useRef(output);
+  useEffect(() => {
+    outputRef.current = output;
+  }, [output]);
+  const [isConnected, setIsConnected] = useState(socket.connected);
+  const [isHolding, setIsHolding] = useState(false);
+  const isHoldingRef = useRef(isHolding);
+  useEffect(() => {
+    isHoldingRef.current = isHolding;
+  }, [isHolding]);
 
-  // Keyboard navigation for suggestions
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (!isOpen || suggestions.length === 0) return;
@@ -47,19 +61,86 @@ export default function App() {
         setSelectedIndex(-1);
       }
     },
-    [isOpen, suggestions, selectedIndex, setSelectedIndex]
+    [isOpen, suggestions, setSelectedIndex, selectedIndex]
   );
 
   const handleSuggestionSelect = (suggestion: string) => {
-    selectSuggestion(suggestion);
     setOutput(output + " " + suggestion);
     clearInput();
-    setSelectedIndex(-1);
+    clearSelection();
   };
 
   // Mouse handlers for highlighting
   const handleMouseEnter = (index: number) => setSelectedIndex(index);
   const handleMouseLeave = () => setSelectedIndex(-1);
+
+  useEffect(() => {
+    function onConnect() {
+      setIsConnected(true);
+    }
+
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+
+    function onInputEvent(event: string, value?: string) {
+      console.log(event, value);
+      if (event === "joystickUp") {
+        moveSelectionUp();
+      }
+      if (event === "joystickDown") {
+        moveSelectionDown();
+      }
+      if (event === "joystickLeft") {
+        console.log(suggestions);
+        console.log(selectedIndex);
+        const suggestion = suggestions[selectedIndex];
+        setOutput(output + " " + suggestion);
+        clearInput();
+        clearSelection();
+      }
+      if (event === "joystickRight") {
+        clearSelection();
+      }
+      if (event === "buttonPress" && value) {
+        if (isHoldingRef.current && value === "6") {
+          console.log("backspace");
+          deleteLatestDigit();
+        }
+        if (isHoldingRef.current && value === "10") {
+          setIsHolding(false);
+        }
+        if (!isHoldingRef.current) {
+          appendInput(value.toString());
+        }
+      }
+      if (event === "buttonHold" && value && value === "10") {
+        console.log("hold");
+        setIsHolding(true);
+        console.log(isHoldingRef.current);
+      }
+    }
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("input", onInputEvent);
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("input", onInputEvent);
+    };
+  }, [
+    appendInput,
+    clearInput,
+    clearSelection,
+    deleteLatestDigit,
+    moveSelectionDown,
+    moveSelectionUp,
+    output,
+    selectedIndex,
+    suggestions,
+  ]);
 
   const getKeypadDisplay = () => {
     return Object.entries(T9_KEYPAD).map(([number, letters]) => (
@@ -80,6 +161,11 @@ export default function App() {
         <h2 className="text-2xl font-bold mb-2">T9 Text Predictor</h2>
         <p className="text-gray-600 text-sm">
           Enter numbers 2-9 to predict words like on old phone keypads
+        </p>
+      </div>
+      <div className="text-center">
+        <p className="text-gray-600 text-sm">
+          {isConnected ? "Connected to server" : "Disconnected from server"}
         </p>
       </div>
 

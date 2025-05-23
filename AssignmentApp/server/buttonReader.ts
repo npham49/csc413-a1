@@ -17,7 +17,6 @@ const port = new SerialPort({
 
 // Create a parser that reads complete lines from the serial port
 // This ensures we get complete JSON messages
-// @ts-expect-error pipe seems to not be read
 const parser = port.pipe(new ReadlineParser({ delimiter: "\r\n" }));
 
 // Listen for incoming data from the Arduino
@@ -64,7 +63,6 @@ parser.on("data", (data: string) => {
 });
 
 // Handle any serial port errors
-// @ts-expect-error error type is not read
 port.on("error", (err: Error) => {
   console.error("Error:", err.message);
   // TODO: Add error recovery logic if needed
