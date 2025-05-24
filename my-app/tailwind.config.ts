@@ -12,7 +12,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
         primary: "#778DA9",
-        card: "#99A9BE"
+        card: "#99A9BE",
+        dark: "#1B263B",
+        accent: "#D9D9D9"
       },
       fontFamily: {
         primary: ['Orbit', 'sans-serif']
