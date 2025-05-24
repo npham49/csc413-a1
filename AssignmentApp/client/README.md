@@ -1,54 +1,36 @@
-# React + TypeScript + Vite
+# How to use component
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This codebase contain a component called ```T9Keyboard``` component which takes a state and state setter.
 
-Currently, two official plugins are available:
+Please copy the references codes and the missing packages.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+To use this within your code, you can use it as following:
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```javascript
+  ...
+  const [output, setOutput] = useState("");
+  const outputRef = useRef(output);
+  useEffect(() => {
+    outputRef.current = output;
+  }, [output]);
+  ...
+  <T9Keyboard output={output} setOutput={setOutput} />
+  ...
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+```output``` would always reflect the value that has been inputted.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+If you do not have the T9 Arduino keyboard connected, you can use numkey 2-9; arrow keys; Backspace and Enter as input.
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+With an Arduino keyboard connected, a NodeJS server would send Socket.io signals from port 4000, this component would receive those signals and trigger actions accordingly.
+
+The following actions are transmitted:
+
+- Button 2-9: Input numbers 2-9 respectively
+- Joystick Up: Move selection up
+- Joystick Down: Move selection down
+- Joystick Left: Delete last digit
+- Joystick Right: Clear input
+- Button 10/Action Button: Select current suggestion
+
+When received Button 10 + Button 6, the component receives this as a delete input.
