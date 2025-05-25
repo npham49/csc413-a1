@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import dropdownselection from "../misc/dropdownselection.json";
 import DropDown from "./Dropdown";
 import ColorPicker from "./ColorPicker";
+import LabelChange from "./LabelChange";
 
 interface DesignBlockProps {
   onSizeChange: (size: { width: string; height: string, opacity: string, color: string, label: string }) => void;
@@ -76,6 +77,9 @@ export default function DesignBlock({ onSizeChange, selectedElement }: DesignBlo
     <ColorPicker
         color={color}
         onChange={handleColorChange}/>
+    <LabelChange
+        label={label}
+        onChange={handleLabelChange}/>
     </div>
   );
 }

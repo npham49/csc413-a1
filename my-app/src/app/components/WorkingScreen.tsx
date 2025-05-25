@@ -10,6 +10,7 @@ type DroppedButton = {
   height: string;
   opacity: string; // Optional opacity property
   color: string; // Optional color property
+  label: string;
 };
 
 interface WorkingScreenProps {
@@ -44,7 +45,7 @@ export default function WorkingScreen({
       // Add a new element
       setElements((prev) => [
         ...prev,
-        { id: Date.now(), x, y, width: "100px", height: "50px", opacity: "1", color: "#ffffff" },
+        { id: Date.now(), x, y, width: "100px", height: "50px", opacity: "1", color: "#ffffff", label: "Button" },
       ]);
     }
   };
@@ -86,7 +87,7 @@ export default function WorkingScreen({
             backgroundColor: button.color
           }}
         >
-          <Button label="Button" width={button.width} height={button.height} opacity={button.opacity} color={button.color}/>
+          <Button label={button.label} width={button.width} height={button.height} opacity={button.opacity} color={button.color}/>
         </div>
       ))}
     </div>

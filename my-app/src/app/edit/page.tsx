@@ -6,16 +6,16 @@ import CodingZone from "../components/CodingZone";
 
 export default function EditPage() {
   const [elements, setElements] = useState<
-    { id: number; x: number; y: number; width: string; height: string, opacity: string, color: string }[]
+    { id: number; x: number; y: number; width: string; height: string, opacity: string, color: string, label: string }[]
   >([]);
   const [selectedElementId, setSelectedElementId] = useState<number | null>(null);
 
-  const handleSizeChange = (size: { width: string; height: string, opacity: string, color: string }) => {
+  const handleSizeChange = (size: { width: string; height: string, opacity: string, color: string, label: string }) => {
     if (selectedElementId !== null) {
       setElements((prev) =>
         prev.map((element) =>
           element.id === selectedElementId
-            ? { ...element, width: size.width, height: size.height, opacity: size.opacity, color: size.color }
+            ? { ...element, width: size.width, height: size.height, opacity: size.opacity, color: size.color, label: size.label }
             : element
         )
       );
