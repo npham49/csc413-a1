@@ -17,6 +17,8 @@
 #define COMMAND_UP     0x04
 #define COMMAND_DOWN   0x08
 
+#include <ezButton.h>
+
 int xValue = 0 ; // To store value of the X axis
 int yValue = 0 ; // To store value of the Y axis
 int command = COMMAND_NO;
@@ -32,6 +34,9 @@ const int buttonPin6 = 7;  // Button 6 connected to digital pin 7
 const int buttonPin7 = 8;  // Button 7 connected to digital pin 8
 const int buttonPin8 = 9;  // Button 8 connected to digital pin 9
 const int buttonPin9 = 10;  // Button 9 connected to digital pin 10
+const int buttonPin10 = 11;  // Button 10 connected to digital pin 11
+
+ezButton button(buttonPin10);  // create ezButton object that attach to pin 7;
 
 // Timing and state tracking variables
 unsigned long buttonPressTime1 = 0;  // Stores when button 1 was pressed
@@ -55,6 +60,8 @@ bool buttonWasPressed7 = false;  // Tracks if button 7 was previously pressed
 bool buttonWasPressed8 = false;  // Tracks if button 8 was previously pressed
 bool buttonWasPressed9 = false;  // Tracks if button 9 was previously pressed
 
+bool mouseMove = false;
+
 // Configuration
 const unsigned long HOLD_THRESHOLD = 500;  // Time in milliseconds to consider a hold (500ms)
 
@@ -74,11 +81,12 @@ void setup()
   pinMode(buttonPin7, INPUT);
   pinMode(buttonPin8, INPUT);
   pinMode(buttonPin9, INPUT);
+  button.setDebounceTime(50); // set debounce time to 50 milliseconds
 }
 
 // ideally we only want to check the released event, pressed event is used to mainly track the hold time
 // once release event comes we decide based on the hold time
-void checkButton(int buttonPin, unsigned long &pressTime, bool &wasPressed, int buttonNumber) {
+void checkButton(int buttonPin, unsigned long &pressTime, bool &wasPressed, int buttonNumber, bool isLeftClick = false) {
   int buttonState = digitalRead(buttonPin);  // Read current button state
   
   if (buttonState == LOW) {  // Button is pressed (LOW due to pull-up)
@@ -87,59 +95,78 @@ void checkButton(int buttonPin, unsigned long &pressTime, bool &wasPressed, int 
       wasPressed = true;     // Update state tracking
     } else {  // Button is being held down
       unsigned long currentTime = millis();
-      // if held longer than the time we set as the threshold for considering it as a hold, send a hold event
       if (currentTime - pressTime >= HOLD_THRESHOLD) {  // Check if held long enough
         // Send hold event JSON
-        Serial.println("{\"action\":\"hold\",\"number\":\"" + String(buttonNumber) + "\"}");
+        if (isLeftClick) {
+          Serial.println("{\"action\":\"mouseLeftHold\"}");
+        } else {
+          Serial.println("{\"action\":\"hold\",\"number\":\"" + String(buttonNumber) + "\"}");
+        }
         pressTime = currentTime;  // Reset timer to prevent multiple hold messages
       }
     }
-  // if released and lower than the time we set as the threshold for considering it as a hold, send a press event
   } else {  // Button is released (HIGH)
     if (wasPressed) {  // Button was just released (transition from LOW to HIGH)
       unsigned long pressDuration = millis() - pressTime;  // Calculate how long button was pressed
       if (pressDuration < HOLD_THRESHOLD) {  // If pressed for less than threshold
-        // Send press event JSON
-        Serial.println("{\"action\":\"press\",\"number\":\"" + String(buttonNumber) + "\"}");
+        if (isLeftClick) {
+          Serial.println("{\"action\":\"mouseLeftClick\"}");
+        } else {
+          Serial.println("{\"action\":\"press\",\"number\":\"" + String(buttonNumber) + "\"}");
+        }
       }
       wasPressed = false;  // Reset state tracking
     }
   }
 }
 
-void checkJoystick() {
+void checkJoystickContinuous() {
   xValue = analogRead(VRX_PIN);
   yValue = analogRead(VRY_PIN);
 
-  command = COMMAND_NO;
+  int moveCommand = COMMAND_NO;
 
   if (xValue < LEFT_THRESHOLD)
-    command = command | COMMAND_LEFT;
+    moveCommand = moveCommand | COMMAND_LEFT;
   else if (xValue > RIGHT_THRESHOLD)
-    command = command | COMMAND_RIGHT;
+    moveCommand = moveCommand | COMMAND_RIGHT;
 
   if (yValue < UP_THRESHOLD)
-    command = command | COMMAND_UP;
+    moveCommand = moveCommand | COMMAND_UP;
   else if (yValue > DOWN_THRESHOLD)
-    command = command | COMMAND_DOWN;
+    moveCommand = moveCommand | COMMAND_DOWN;
 
-  // Debounce: Only log a new event if lastCommand was neutral (COMMAND_NO)
-  if (lastCommand == COMMAND_NO && command != COMMAND_NO) {
-    if (command & COMMAND_LEFT) {
-      Serial.println("{\"action\":\"joystick\",\"direction\":\"left\"}");
+  if (mouseMove) {
+    if (moveCommand & COMMAND_LEFT) {
+      Serial.println("{\"action\":\"mouseMove\",\"direction\":\"left\"}");
     }
-    if (command & COMMAND_RIGHT) {
-      Serial.println("{\"action\":\"joystick\",\"direction\":\"right\"}");
+    if (moveCommand & COMMAND_RIGHT) {
+      Serial.println("{\"action\":\"mouseMove\",\"direction\":\"right\"}");
     }
-    if (command & COMMAND_UP) {
-      Serial.println("{\"action\":\"joystick\",\"direction\":\"up\"}");
+    if (moveCommand & COMMAND_UP) {
+      Serial.println("{\"action\":\"mouseMove\",\"direction\":\"up\"}");
     }
-    if (command & COMMAND_DOWN) {
-      Serial.println("{\"action\":\"joystick\",\"direction\":\"down\"}");
+    if (moveCommand & COMMAND_DOWN) {
+      Serial.println("{\"action\":\"mouseMove\",\"direction\":\"down\"}");
     }
+  } else {
+    // Only send joystick events on direction change (debounced)
+    if (lastCommand == COMMAND_NO && moveCommand != COMMAND_NO) {
+      if (moveCommand & COMMAND_LEFT) {
+        Serial.println("{\"action\":\"joystick\",\"direction\":\"left\"}");
+      }
+      if (moveCommand & COMMAND_RIGHT) {
+        Serial.println("{\"action\":\"joystick\",\"direction\":\"right\"}");
+      }
+      if (moveCommand & COMMAND_UP) {
+        Serial.println("{\"action\":\"joystick\",\"direction\":\"up\"}");
+      }
+      if (moveCommand & COMMAND_DOWN) {
+        Serial.println("{\"action\":\"joystick\",\"direction\":\"down\"}");
+      }
+    }
+    lastCommand = moveCommand;
   }
-  // Update lastCommand
-  lastCommand = command;
 }
 
 void loop()
@@ -153,7 +180,13 @@ void loop()
   checkButton(buttonPin6, buttonPressTime6, buttonWasPressed6, 7);
   checkButton(buttonPin7, buttonPressTime7, buttonWasPressed7, 8);
   checkButton(buttonPin8, buttonPressTime8, buttonWasPressed8, 9);
-  checkButton(buttonPin9, buttonPressTime9, buttonWasPressed9, 10);
-  checkJoystick();
+  checkButton(buttonPin9, buttonPressTime9, buttonWasPressed9, 10, mouseMove);
+  button.loop(); // MUST call the loop() function first
+
+  if(button.isReleased()) {
+    mouseMove = !mouseMove;
+  }
+
+  checkJoystickContinuous();
   delay(10);  // Small delay to prevent button bouncing and reduce CPU usage
 }
