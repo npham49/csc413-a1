@@ -8,6 +8,11 @@ import { Server } from "socket.io";
 
 import { SerialPort } from "serialport";
 import { ReadlineParser } from "@serialport/parser-readline";
+import robot from "robotjs";
+
+robot.setMouseDelay(2);
+
+let mouseHold = false;
 
 const app = express();
 const server = createServer(app);
@@ -28,7 +33,7 @@ io.on("connection", (socket) => {
 // - macOS: /dev/cu.usbserial-140, /dev/tty.usbmodem*
 // - Linux: /dev/ttyUSB0, /dev/ttyACM0
 const port = new SerialPort({
-  path: "/dev/cu.usbserial-140", // Update this to match your system's port
+  path: "/dev/cu.usbserial-130", // Update this to match your system's port
   baudRate: 9600, // Must match Arduino's Serial.begin() rate
 });
 
@@ -43,12 +48,12 @@ parser.on("data", (data: string) => {
     const buttonEvent = JSON.parse(data);
 
     // Handle different types of button events
-    if (buttonEvent.action === "press") {
+    if (buttonEvent.action === "press" && buttonEvent.number !== 10) {
       console.log(`Button ${buttonEvent.number} was pressed`);
       // TODO: Add your press-specific logic here
       // For example: trigger a function, update UI, etc.
       io.emit("input", "buttonPress", buttonEvent.number);
-    } else if (buttonEvent.action === "hold") {
+    } else if (buttonEvent.action === "hold" && buttonEvent.number !== 10) {
       console.log(`Button ${buttonEvent.number} is being held`);
       // TODO: Add your hold-specific logic here
       // For example: start a continuous action, show a different UI state, etc.
@@ -77,6 +82,48 @@ parser.on("data", (data: string) => {
     ) {
       console.log("Joystick Down");
       io.emit("input", "joystickDown");
+    } else if (buttonEvent.action === "mouseMove") {
+      console.log("Mouse Move", buttonEvent.direction);
+      if (buttonEvent.direction === "left") {
+        if (mouseHold) {
+          robot.dragMouse(robot.getMousePos().x - 15, robot.getMousePos().y);
+        } else {
+          robot.moveMouse(robot.getMousePos().x - 15, robot.getMousePos().y);
+        }
+      } else if (buttonEvent.direction === "right") {
+        if (mouseHold) {
+          robot.dragMouse(robot.getMousePos().x + 15, robot.getMousePos().y);
+        } else {
+          robot.moveMouse(robot.getMousePos().x + 15, robot.getMousePos().y);
+        }
+      } else if (buttonEvent.direction === "up") {
+        if (mouseHold) {
+          robot.dragMouse(robot.getMousePos().x, robot.getMousePos().y - 15);
+        } else {
+          robot.moveMouse(robot.getMousePos().x, robot.getMousePos().y - 15);
+        }
+      } else if (buttonEvent.direction === "down") {
+        if (mouseHold) {
+          robot.dragMouse(robot.getMousePos().x, robot.getMousePos().y + 15);
+        } else {
+          robot.moveMouse(robot.getMousePos().x, robot.getMousePos().y + 15);
+        }
+      }
+    } else if (buttonEvent.action === "mouseLeftClick") {
+      if (mouseHold) {
+        console.log("Mouse Left Release");
+        robot.mouseToggle("up", "left");
+        mouseHold = false;
+      } else {
+        console.log("Mouse Left Click");
+        robot.mouseClick();
+      }
+    } else if (buttonEvent.action === "mouseLeftHold") {
+      if (!mouseHold) {
+        console.log("Mouse Left Hold");
+        robot.mouseToggle("down", "left");
+        mouseHold = true;
+      }
     }
   } catch (error) {
     // Handle non-JSON messages (like the initial "Hello" message)
