@@ -5,8 +5,8 @@ import DropDown from "./Dropdown";
 import ColorPicker from "./ColorPicker";
 
 interface DesignBlockProps {
-  onSizeChange: (size: { width: string; height: string, opacity: string, color: string }) => void;
-  selectedElement: { width: string; height: string, opacity: string, color: string } | undefined; // Add selectedElement prop
+  onSizeChange: (size: { width: string; height: string, opacity: string, color: string, label: string }) => void;
+  selectedElement: { width: string; height: string, opacity: string, color: string, label: string } | undefined; // Add selectedElement prop
 }
 
 export default function DesignBlock({ onSizeChange, selectedElement }: DesignBlockProps) {
@@ -14,6 +14,7 @@ export default function DesignBlock({ onSizeChange, selectedElement }: DesignBlo
   const [height, setHeight] = useState("50px");
   const [opacity, setOpacity] = useState("1");
   const [color, setColor] = useState("#ffffff");
+  const [label, setLabel] = useState("Button");
 
   // Update dropdown values when the selected element changes
   useEffect(() => {
@@ -21,27 +22,34 @@ export default function DesignBlock({ onSizeChange, selectedElement }: DesignBlo
       setWidth(selectedElement.width);
       setHeight(selectedElement.height);
       setOpacity(selectedElement.opacity);
+      setColor(selectedElement.color);
+      setLabel(selectedElement.label); // Assuming label is part of the selected element
     }
   }, [selectedElement]);
 
   const handleWidthChange = (value: string) => {
     setWidth(value);
-    onSizeChange({ width: value, height, opacity, color }); // Pass the correct width and current height
+    onSizeChange({ width: value, height, opacity, color, label }); // Pass the correct width and current height
   };
 
   const handleHeightChange = (value: string) => {
     setHeight(value);
-    onSizeChange({ width, height: value, opacity, color }); // Pass the current width and correct height
+    onSizeChange({ width, height: value, opacity, color, label }); // Pass the current width and correct height
   };
 
   const handleOpacityChange = (value: string) => {
     setOpacity(value);
-    onSizeChange({ width, height, opacity: value, color }); // Pass the current width and correct height
+    onSizeChange({ width, height, opacity: value, color, label }); // Pass the current width and correct height
   };
 
   const handleColorChange = (value: string) => {
     setColor(value);
-    onSizeChange({ width, height, opacity, color: value }); // Pass the current width and correct height
+    onSizeChange({ width, height, opacity, color: value, label }); // Pass the current width and correct height
+  };
+
+  const handleLabelChange = (value: string) => {
+    setLabel(value);
+    onSizeChange({ width, height, opacity, color, label: value }); // Pass the current width and correct height
   };
 
   return (
@@ -66,6 +74,7 @@ export default function DesignBlock({ onSizeChange, selectedElement }: DesignBlo
           onChange={handleOpacityChange}
           defaultValue={opacity}/>
     <ColorPicker
+        color={color}
         onChange={handleColorChange}/>
     </div>
   );

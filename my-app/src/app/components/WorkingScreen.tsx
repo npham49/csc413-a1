@@ -8,8 +8,8 @@ type DroppedButton = {
   id: number;
   width: string;
   height: string;
-  opacity?: string; // Optional opacity property
-  color?: string; // Optional color property
+  opacity: string; // Optional opacity property
+  color: string; // Optional color property
 };
 
 interface WorkingScreenProps {
@@ -44,7 +44,7 @@ export default function WorkingScreen({
       // Add a new element
       setElements((prev) => [
         ...prev,
-        { id: Date.now(), x, y, width: "100px", height: "50px" },
+        { id: Date.now(), x, y, width: "100px", height: "50px", opacity: "1", color: "#ffffff" },
       ]);
     }
   };

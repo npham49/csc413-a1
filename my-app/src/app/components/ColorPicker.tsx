@@ -1,30 +1,37 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 
 interface ColorPickerProps {
-    onChange: (color: string) => void;
+  color: string; // Current color of the selected button
+  onChange: (color: string) => void; // Callback to update the color
 }
-export default function ColorPicker({onChange}: ColorPickerProps) {
-    const [selectedColor, setSelectedColor] = useState<string>('#000000');
 
-    const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        onChange(event.target.value);
-        setSelectedColor(event.target.value);
-    };
+export default function ColorPicker({ color, onChange }: ColorPickerProps) {
+  const [selectedColor, setSelectedColor] = useState<string>(color);
 
-    return (
-        <div className="space-y-3" style={{ textAlign: 'center', marginTop: '20px' }}>
-            <h2 className='text-xl'>Pick a Color</h2>
-            <input
-                type="color"
-                value={selectedColor}
-                onChange={handleColorChange}
-                style={{ cursor: 'pointer' }}
-            />
-            <p className='text-lg'>
-                Selected Color: <span style={{ color: selectedColor }}>{selectedColor}</span>
-            </p>
-        </div>
-    );
-};
+  // Update the selected color when the color prop changes
+  useEffect(() => {
+    setSelectedColor(color);
+  }, [color]);
 
+  const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newColor = event.target.value;
+    setSelectedColor(newColor);
+    onChange(newColor); // Notify the parent component of the color change
+  };
+
+  return (
+    <div className="space-y-3" style={{ textAlign: "center", marginTop: "20px" }}>
+      <h2 className="text-xl">Pick a Color</h2>
+      <input
+        type="color"
+        value={selectedColor}
+        onChange={handleColorChange}
+        style={{ cursor: "pointer" }}
+      />
+      <p className="text-lg">
+        Selected Color: <span style={{ color: selectedColor }}>{selectedColor}</span>
+      </p>
+    </div>
+  );
+}
