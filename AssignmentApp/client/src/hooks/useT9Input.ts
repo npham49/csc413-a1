@@ -1,8 +1,8 @@
 import {
   ENHANCED_DICTIONARY,
   ENHANCED_FREQUENCIES,
-} from "@/lib/dictionary/simple";
-import { T9Helper } from "@/lib/T9Helper";
+} from "../lib/dictionary/simple";
+import { T9Helper } from "../lib/T9Helper";
 import { useCallback, useState, useRef, useEffect } from "react";
 
 // Example React hook for using T9Helper

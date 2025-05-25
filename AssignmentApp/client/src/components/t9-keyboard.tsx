@@ -1,8 +1,8 @@
 // Complete React Component Example using shadcn/ui
 import { useState, useCallback, useEffect, useRef } from "react";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Input } from "./ui/input";
+import { Card } from "./ui/card";
+import { Badge } from "./ui/badge";
 import { useT9Input } from "../hooks/useT9Input";
 import { Button } from "../components/ui/button";
 import { DeleteIcon } from "lucide-react";
@@ -166,7 +166,7 @@ export default function T9Keyboard({ output, setOutput }: T9KeyboardProps) {
             onKeyDown={handleKeyDown}
             onChange={(e) => handleInputChange(e.target.value)}
             placeholder="Type numbers 2-9 (e.g., 4663 for 'good')"
-            className="text-lg font-mono tracking-wider"
+            className="text-lg font-mono tracking-wider text-black"
             autoComplete="off"
           />
           <div className="text-xs text-gray-500">

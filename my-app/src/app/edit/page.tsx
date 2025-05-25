@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState} from "react";
 import DraggingBar from "../components/DraggingBar";
 import WorkingScreen from "../components/WorkingScreen";
 import CodingZone from "../components/CodingZone";
@@ -22,12 +22,6 @@ export default function EditPage() {
     }
   };
 
-  const [output, setOutput] = useState("");
-  const outputRef = useRef(output);
-  useEffect(() => {
-    outputRef.current = output;
-  }, [output]);
-  <T9Keyboard output={output} setOutput={setOutput} />
   const handleElementSelect = (id: number) => {
     setSelectedElementId(id);
   };

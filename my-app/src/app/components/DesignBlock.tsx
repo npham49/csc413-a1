@@ -54,7 +54,7 @@ export default function DesignBlock({ onSizeChange, selectedElement }: DesignBlo
   };
 
   return (
-    <div className="h-1/2 bg-dark text-white p-8 space-y-2">
+    <div className="h-full bg-dark text-white p-8 space-y-2">
       <h1 className="text-center text-2xl">Design</h1>
       <div className="grid grid-cols-2 gap-x-10 gap-y-4">
         <DropDown
