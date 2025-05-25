@@ -1,16 +1,33 @@
 "use client";
 import { useEffect, useState } from "react";
-import dropdownselection from "../misc/dropdownselection.json";
+import dropdownselection from "@/misc/dropdownselection.json";
 import DropDown from "./Dropdown";
 import ColorPicker from "./ColorPicker";
 import LabelChange from "./LabelChange";
 
 interface DesignBlockProps {
-  onSizeChange: (size: { width: string; height: string, opacity: string, color: string, label: string }) => void;
-  selectedElement: { width: string; height: string, opacity: string, color: string, label: string } | undefined; // Add selectedElement prop
+  onSizeChange: (size: {
+    width: string;
+    height: string;
+    opacity: string;
+    color: string;
+    label: string;
+  }) => void;
+  selectedElement:
+    | {
+        width: string;
+        height: string;
+        opacity: string;
+        color: string;
+        label: string;
+      }
+    | undefined; // Add selectedElement prop
 }
 
-export default function DesignBlock({ onSizeChange, selectedElement }: DesignBlockProps) {
+export default function DesignBlock({
+  onSizeChange,
+  selectedElement,
+}: DesignBlockProps) {
   const [width, setWidth] = useState("100px");
   const [height, setHeight] = useState("50px");
   const [opacity, setOpacity] = useState("1");
@@ -70,16 +87,14 @@ export default function DesignBlock({ onSizeChange, selectedElement }: DesignBlo
           defaultValue={height} // Set the current height as the default value
         />
       </div>
-      <DropDown label="Opacity"
-          options={dropdownselection.opacity}
-          onChange={handleOpacityChange}
-          defaultValue={opacity}/>
-    <ColorPicker
-        color={color}
-        onChange={handleColorChange}/>
-    <LabelChange
-        label={label}
-        onChange={handleLabelChange}/>
+      <DropDown
+        label="Opacity"
+        options={dropdownselection.opacity}
+        onChange={handleOpacityChange}
+        defaultValue={opacity}
+      />
+      <ColorPicker color={color} onChange={handleColorChange} />
+      <LabelChange label={label} onChange={handleLabelChange} />
     </div>
   );
 }
