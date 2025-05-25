@@ -1,47 +1,49 @@
-// export default function WorkingScreen() {
-//     return (
-//         <div className="flex flex-col bg-accent justify-center w-full">
-//             <div >
-//                 <img src="https://firebasestorage.googleapis.com/v0/b/personal-web-4022f.firebasestorage.app/o/background.png?alt=media&token=d9ebe754-401a-4e5c-a515-78496083109e" alt="pic" />
-//             </div>
-//         </div>
-//     )
-// }
 "use client";
 
-import { useState } from "react";
 import Button from "./Button";
 
 type DroppedButton = {
   x: number;
   y: number;
   id: number;
+  width: string;
+  height: string;
 };
 
-export default function WorkingScreen() {
-  const [droppedButtons, setDroppedButtons] = useState<DroppedButton[]>([]);
-  const [draggedId, setDraggedId] = useState<number | null>(null);
+interface WorkingScreenProps {
+  elements: DroppedButton[];
+  setElements: React.Dispatch<React.SetStateAction<DroppedButton[]>>;
+  onElementSelect: (id: number) => void;
+}
 
+export default function WorkingScreen({
+  elements,
+  setElements,
+  onElementSelect,
+}: WorkingScreenProps) {
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
 
     const dropTarget = event.currentTarget.getBoundingClientRect();
     const x = event.clientX - dropTarget.left;
     const y = event.clientY - dropTarget.top;
+
     const data = event.dataTransfer.getData("text/plain");
 
-    if (data === "Button") {
-      // New button from DraggingBar
-      setDroppedButtons((prev) => [
-        ...prev,
-        { x, y, id: Date.now() + Math.random() },
-      ]);
-    } else if (data.startsWith("Move:")) {
-      // Repositioning an existing button
-      const id = parseFloat(data.split(":")[1]);
-      setDroppedButtons((prev) =>
-        prev.map((btn) => (btn.id === id ? { ...btn, x, y } : btn))
+    if (data.startsWith("Move:")) {
+      // Reposition an existing element
+      const id = parseInt(data.split(":")[1], 10);
+      setElements((prev) =>
+        prev.map((element) =>
+          element.id === id ? { ...element, x, y } : element
+        )
       );
+    } else {
+      // Add a new element
+      setElements((prev) => [
+        ...prev,
+        { id: Date.now(), x, y, width: "100px", height: "50px" },
+      ]);
     }
   };
 
@@ -49,12 +51,9 @@ export default function WorkingScreen() {
     event.preventDefault();
   };
 
-  const handleButtonDragStart = (
-    event: React.DragEvent<HTMLDivElement>,
-    id: number
-  ) => {
-    setDraggedId(id);
-    event.dataTransfer.setData("text/plain", `Move:${id}`);
+  const handleDragStart = (event: React.DragEvent<HTMLDivElement>, id: number) => {
+    onElementSelect(id); // Select the element
+    event.dataTransfer.setData("text/plain", `Move:${id}`); // Set drag data
   };
 
   return (
@@ -63,22 +62,27 @@ export default function WorkingScreen() {
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <div>
+        <div>
         <img
-          src="https://firebasestorage.googleapis.com/v0/b/personal-web-4022f.firebasestorage.app/o/background.png?alt=media&token=d9ebe754-401a-4e5c-a515-78496083109e"
-          alt="pic"
-        />
-      </div>
-
-      {droppedButtons.map((button) => (
+            src="https://firebasestorage.googleapis.com/v0/b/personal-web-4022f.firebasestorage.app/o/background.png?alt=media&token=d9ebe754-401a-4e5c-a515-78496083109e"
+            alt="Background"
+            />
+        </div>
+      {elements.map((button) => (
         <div
           key={button.id}
           className="absolute cursor-move"
           draggable
-          onDragStart={(e) => handleButtonDragStart(e, button.id)}
-          style={{ top: button.y, left: button.x }}
+          onClick={() => onElementSelect(button.id)} // Update selected element
+          onDragStart={(e) => handleDragStart(e, button.id)} // Handle drag start
+          style={{
+            top: button.y,
+            left: button.x,
+            width: button.width,
+            height: button.height,
+          }}
         >
-          <Button label="Button" />
+          <Button label="Button" width={button.width} height={button.height} />
         </div>
       ))}
     </div>
