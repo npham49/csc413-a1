@@ -8,6 +8,8 @@ type DroppedButton = {
   id: number;
   width: string;
   height: string;
+  opacity?: string; // Optional opacity property
+  color?: string; // Optional color property
 };
 
 interface WorkingScreenProps {
@@ -62,12 +64,12 @@ export default function WorkingScreen({
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-        <div>
+        {/* <div>
         <img
             src="https://firebasestorage.googleapis.com/v0/b/personal-web-4022f.firebasestorage.app/o/background.png?alt=media&token=d9ebe754-401a-4e5c-a515-78496083109e"
             alt="Background"
             />
-        </div>
+        </div> */}
       {elements.map((button) => (
         <div
           key={button.id}
@@ -80,9 +82,11 @@ export default function WorkingScreen({
             left: button.x,
             width: button.width,
             height: button.height,
+            opacity: button.opacity,
+            backgroundColor: button.color
           }}
         >
-          <Button label="Button" width={button.width} height={button.height} />
+          <Button label="Button" width={button.width} height={button.height} opacity={button.opacity} color={button.color}/>
         </div>
       ))}
     </div>

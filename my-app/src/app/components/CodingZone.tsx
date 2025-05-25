@@ -3,8 +3,8 @@ import DesignBlock from "./DesignBlock";
 import CodeBlock from "./CodeBlock";
 
 interface CodingZoneProps {
-  onSizeChange: (size: { width: string; height: string }) => void;
-  selectedElement: { width: string; height: string } | undefined; // Add selectedElement prop
+  onSizeChange: (size: { width: string; height: string, opacity: string, color: string }) => void;
+  selectedElement: { width: string; height: string, opacity: string, color: string } | undefined; // Add selectedElement prop
 }
 
 export default function CodingZone({ onSizeChange, selectedElement }: CodingZoneProps) {
