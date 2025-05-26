@@ -22,16 +22,18 @@ export default function ColorPicker({ color, onChange }: ColorPickerProps) {
 
   return (
     <div className="space-y-3" style={{ textAlign: "center", marginTop: "20px" }}>
-      <h2 className="text-xl">Pick a Color</h2>
-      <input
-        type="color"
-        value={selectedColor}
-        onChange={handleColorChange}
-        style={{ cursor: "pointer" }}
-      />
-      <p className="text-lg">
-        Selected Color: <span style={{ color: selectedColor }}>{selectedColor}</span>
-      </p>
+      <div className="flex flex-row justify-center space-x-2">
+        <input
+          type="color"
+          value={selectedColor}
+          onChange={handleColorChange}
+          style={{ cursor: "pointer" }}
+        />
+        <p className="text-lg">
+          Selected Color: <span style={{ color: selectedColor }}>{selectedColor}</span>
+        </p>
+      </div>
+      
     </div>
   );
 }

@@ -45,7 +45,7 @@ export default function WorkingScreen({
       // Add a new element
       setElements((prev) => [
         ...prev,
-        { id: Date.now(), x, y, width: "100px", height: "50px", opacity: "1", color: "#ffffff", label: "Button" },
+        { id: Date.now(), x, y, width: "100px", height: "50px", opacity: "1", color: "gray", label: "" },
       ]);
     }
   };
@@ -65,12 +65,12 @@ export default function WorkingScreen({
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-        {/* <div>
+        <div>
         <img
             src="https://firebasestorage.googleapis.com/v0/b/personal-web-4022f.firebasestorage.app/o/background.png?alt=media&token=d9ebe754-401a-4e5c-a515-78496083109e"
             alt="Background"
             />
-        </div> */}
+        </div>
       {elements.map((button) => (
         <div
           key={button.id}

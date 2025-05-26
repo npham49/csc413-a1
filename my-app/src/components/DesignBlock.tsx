@@ -32,7 +32,7 @@ export default function DesignBlock({
   const [height, setHeight] = useState("50px");
   const [opacity, setOpacity] = useState("1");
   const [color, setColor] = useState("#ffffff");
-  const [label, setLabel] = useState("Button");
+  const [label, setLabel] = useState("");
 
   // Update dropdown values when the selected element changes
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function DesignBlock({
   };
 
   return (
-    <div className="h-full bg-dark text-white p-8 space-y-2">
+    <div className="h-1/2 bg-dark text-white p-8 space-y-2">
       <h1 className="text-center text-2xl">Design</h1>
       <div className="grid grid-cols-2 gap-x-10 gap-y-4">
         <DropDown

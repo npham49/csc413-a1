@@ -13,9 +13,10 @@ import { socket } from "../lib/socket";
 interface T9KeyboardProps {
   output: string;
   setOutput: (output: string) => void;
+  onChange: (value: string) => void; // Optional callback for label change
 }
 
-export default function T9Keyboard({ output, setOutput }: T9KeyboardProps) {
+export default function T9Keyboard({ output, setOutput, onChange }: T9KeyboardProps) {
   const {
     input,
     suggestions,
@@ -66,7 +67,9 @@ export default function T9Keyboard({ output, setOutput }: T9KeyboardProps) {
   );
 
   const handleSuggestionSelect = (suggestion: string) => {
-    setOutput(output + " " + suggestion);
+    const newOutput = output + " " + suggestion
+    setOutput(newOutput);
+    onChange(newOutput); // Notify parent component of output change
     clearInput();
     clearSelection();
   };
@@ -149,7 +152,7 @@ export default function T9Keyboard({ output, setOutput }: T9KeyboardProps) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-4">
+    <div className="max-w-2xl mx-auto space-y-4">
       <div className="text-center">
         <p className="text-gray-600 text-sm">
           {isConnected ? "Connected to server" : "Disconnected from server"}
@@ -159,9 +162,9 @@ export default function T9Keyboard({ output, setOutput }: T9KeyboardProps) {
       {/* Input Section */}
       <div className="relative">
         <div className="space-y-2">
-          <label htmlFor="t9-input" className="text-sm font-medium">
+          {/* <label htmlFor="t9-input" className="text-sm font-medium">
             T9 Sequence:
-          </label>
+          </label> */}
           <Input
             id="t9-input"
             value={input}
@@ -171,13 +174,16 @@ export default function T9Keyboard({ output, setOutput }: T9KeyboardProps) {
             className="text-lg font-mono tracking-wider text-black bg-white"
             autoComplete="off"
           />
-          <div className="text-xs text-gray-500">
-            Output: <span className="font-mono">{output}</span>
+          <div className="flex items-center justify-between mt-2">
+            <div className="text-lg text-white">
+              Output: <span className="font-mono">{output}</span>
+            </div>
+            {/* backspace button  */}
+            <Button variant="outline" size="icon" onClick={handleBackspace}>
+              <DeleteIcon className="w-4 h-4 text-black" />
+            </Button>
           </div>
-          {/* backspace button  */}
-          <Button variant="outline" size="icon" onClick={handleBackspace}>
-            <DeleteIcon className="w-4 h-4 text-black" />
-          </Button>
+          
         </div>
 
         {/* Suggestions Dropdown */}
