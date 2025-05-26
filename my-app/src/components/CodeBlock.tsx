@@ -2,6 +2,8 @@
 import IfBlock from "./IfBlock";
 import Options from "./Options";
 import { useState } from "react";
+import {Button} from '@/components/ui/button';
+import HTMLBlock from "./HTMLBlock";
 
 interface CodeBlockProps {
   elements: { id: number; label: string }[]; // Define the structure of the elements array
@@ -18,6 +20,7 @@ const logicOptions = ["if", "for", "filter", "map", "reduce"];
 
 export default function CodeBlock({ elements, selectedElement }: CodeBlockProps) {
     const [selectedOption, setSelectedOption] = useState(false)
+    const [showHtml, setShowHtml] = useState(false);
     const handleOptionClick = () => {
       setSelectedOption(!selectedOption);
       console.log("Selected option:", selectedElement);
@@ -36,17 +39,26 @@ export default function CodeBlock({ elements, selectedElement }: CodeBlockProps)
             }
         }
     }
+    const handleHTMLShow = () => {
+      setShowHtml(!showHtml);
+    };
   return (
-    <div className="bg-primary p-2 h-1/2 overflow-y-auto">
+    <div className="flex flex-col items-center space-y-4 bg-primary p-6 h-1/2 overflow-y-auto">
       <div className="flex flex-row items-center space-x-4 overflow-x-auto">
         <p className="text-md text-white">Logic</p>
-        { logicOptions.map((option, i) => (
-                <Options key={i} option={option} onClick={handleOptionClick}/>
-            ))
-        }
+        {logicOptions.map((option, i) => (
+          <Options key={i} option={option} onClick={handleOptionClick} />
+        ))}
       </div>
-
-      {selectedOption && <IfBlock elements={elements} /> }
+      {selectedOption && (
+        <div className="flex flex-col items-center space-y-4">
+          <IfBlock elements={elements} />
+          <Button className="bg-dark text-md" onClick={handleHTMLShow}>
+            Show HTML
+          </Button>
+        </div>
+      )}
+      {showHtml && <HTMLBlock />}
     </div>
   );
 }
