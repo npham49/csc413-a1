@@ -1,3 +1,5 @@
+"use client";
+
 // Complete React Component Example using shadcn/ui
 import { useState, useCallback, useEffect, useRef } from "react";
 import { Input } from "./ui/input";
@@ -11,9 +13,10 @@ import { socket } from "../lib/socket";
 interface T9KeyboardProps {
   output: string;
   setOutput: (output: string) => void;
+  onChange: (value: string) => void; // Optional callback for label change
 }
 
-export default function T9Keyboard({ output, setOutput }: T9KeyboardProps) {
+export default function T9Keyboard({ output, setOutput, onChange }: T9KeyboardProps) {
   const {
     input,
     suggestions,
@@ -64,7 +67,9 @@ export default function T9Keyboard({ output, setOutput }: T9KeyboardProps) {
   );
 
   const handleSuggestionSelect = (suggestion: string) => {
-    setOutput(output + " " + suggestion);
+    const newOutput = output + " " + suggestion
+    setOutput(newOutput);
+    onChange(newOutput); // Notify parent component of output change
     clearInput();
     clearSelection();
   };
@@ -147,12 +152,12 @@ export default function T9Keyboard({ output, setOutput }: T9KeyboardProps) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-4">
-      {/* <div className="text-center">
+    <div className="max-w-2xl mx-auto space-y-4">
+      <div className="text-center">
         <p className="text-gray-600 text-sm">
           {isConnected ? "Connected to server" : "Disconnected from server"}
         </p>
-      </div> */}
+      </div>
 
       {/* Input Section */}
       <div className="relative">
@@ -166,16 +171,19 @@ export default function T9Keyboard({ output, setOutput }: T9KeyboardProps) {
             onKeyDown={handleKeyDown}
             onChange={(e) => handleInputChange(e.target.value)}
             placeholder="Type numbers 2-9 (e.g., 4663 for 'good')"
-            className="text-lg font-primary tracking-wider text-black bg-white"
+            className="text-lg font-mono tracking-wider text-black bg-white"
             autoComplete="off"
           />
-          <div className="text-xs text-gray-500">
-            Output: <span className="font-mono text-lg">{output}</span>
+          <div className="flex items-center justify-between mt-2">
+            <div className="text-lg text-white">
+              Output: <span className="font-mono">{output}</span>
+            </div>
+            {/* backspace button  */}
+            <Button variant="outline" size="icon" onClick={handleBackspace}>
+              <DeleteIcon className="w-4 h-4 text-black" />
+            </Button>
           </div>
-          {/* backspace button  */}
-          <Button size="icon" onClick={handleBackspace}>
-            <DeleteIcon className="w-10 h-5" />
-          </Button>
+          
         </div>
 
         {/* Suggestions Dropdown */}
@@ -214,7 +222,7 @@ export default function T9Keyboard({ output, setOutput }: T9KeyboardProps) {
       </div>
 
       {/* Example */}
-      {/* {!input && (
+      {!input && (
         <Card className="p-4 bg-green-50 border-green-200">
           <h3 className="font-semibold text-green-900 mb-2">
             Try these examples:
@@ -234,7 +242,7 @@ export default function T9Keyboard({ output, setOutput }: T9KeyboardProps) {
             )}
           </div>
         </Card>
-      )} */}
+      )}
     </div>
   );
 }
