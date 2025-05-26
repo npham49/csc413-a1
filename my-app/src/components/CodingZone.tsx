@@ -15,7 +15,7 @@ export default function CodingZone({ onSizeChange, selectedElement, elements }: 
         onSizeChange={onSizeChange} // Pass onSizeChange to DesignBlock
         selectedElement={selectedElement} // Pass selectedElement to DesignBlock
       />
-      <CodeBlock elements={elements} /> {/* Pass elements to CodeBlock */}
+      <CodeBlock elements={elements} selectedElement={selectedElement}/> {/* Pass elements to CodeBlock */}
     </div>
   );
 }
