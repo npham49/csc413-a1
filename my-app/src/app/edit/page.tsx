@@ -64,6 +64,7 @@ export default function EditPage() {
         onElementSelect={handleElementSelect}
       />
       <CodingZone
+        elements={elements} // Pass the elements state
         onSizeChange={handleSizeChange}
         selectedElement={selectedElement} // Pass the selected element
       />
