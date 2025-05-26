@@ -1,8 +1,7 @@
 "use client";
 import React from "react";
 import { useState, useEffect, useRef } from "react";
-import T9Keyboard from "@/../../AssignmentApp/client/src/components/t9-keyboard";
-
+import T9Keyboard from "@/components/t9-keyboard";
 
 interface LabelChangeProps {
   label: string; // Current label of the selected button
@@ -23,10 +22,13 @@ export default function LabelChange({ label, onChange }: LabelChangeProps) {
   }, [output]);
 
   return (
-    <div className="space-y-3" style={{ textAlign: "center", marginTop: "20px" }}>
+    <div
+      className="space-y-3"
+      style={{ textAlign: "center", marginTop: "20px" }}
+    >
       <h2 className="text-xl">Change Label</h2>
-      <T9Keyboard output={output} setOutput={setOutput}/>
-      
+      <T9Keyboard output={output} setOutput={setOutput} />
+
       <input
         type="text"
         value={currentLabel}
