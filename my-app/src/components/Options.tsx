@@ -8,7 +8,7 @@ export default function Options({ option, onClick }: OptionsProps) {
     return (
         <div>
             <button
-                className="bg-dark text-white px-4 py-2 rounded-[40px] hover:bg-blue-600"
+                className="bg-dark text-white px-4 py-2 rounded-[40px] w-full hover:bg-blue-600"
                 onClick={onClick}
             >
                 {option}
