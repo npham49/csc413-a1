@@ -33,7 +33,7 @@ io.on("connection", (socket) => {
 // - macOS: /dev/cu.usbserial-140, /dev/tty.usbmodem*
 // - Linux: /dev/ttyUSB0, /dev/ttyACM0
 const port = new SerialPort({
-  path: "/dev/cu.usbserial-130", // Update this to match your system's port
+  path: "/dev/cu.usbserial-110", // Update this to match your system's port
   baudRate: 9600, // Must match Arduino's Serial.begin() rate
 });
 
@@ -86,27 +86,27 @@ parser.on("data", (data: string) => {
       console.log("Mouse Move", buttonEvent.direction);
       if (buttonEvent.direction === "left") {
         if (mouseHold) {
-          robot.dragMouse(robot.getMousePos().x - 15, robot.getMousePos().y);
+          robot.dragMouse(robot.getMousePos().x - 12, robot.getMousePos().y);
         } else {
-          robot.moveMouse(robot.getMousePos().x - 15, robot.getMousePos().y);
+          robot.moveMouse(robot.getMousePos().x - 12, robot.getMousePos().y);
         }
       } else if (buttonEvent.direction === "right") {
         if (mouseHold) {
-          robot.dragMouse(robot.getMousePos().x + 15, robot.getMousePos().y);
+          robot.dragMouse(robot.getMousePos().x + 12, robot.getMousePos().y);
         } else {
-          robot.moveMouse(robot.getMousePos().x + 15, robot.getMousePos().y);
+          robot.moveMouse(robot.getMousePos().x + 12, robot.getMousePos().y);
         }
       } else if (buttonEvent.direction === "up") {
         if (mouseHold) {
-          robot.dragMouse(robot.getMousePos().x, robot.getMousePos().y - 15);
+          robot.dragMouse(robot.getMousePos().x, robot.getMousePos().y - 12);
         } else {
-          robot.moveMouse(robot.getMousePos().x, robot.getMousePos().y - 15);
+          robot.moveMouse(robot.getMousePos().x, robot.getMousePos().y - 12);
         }
       } else if (buttonEvent.direction === "down") {
         if (mouseHold) {
-          robot.dragMouse(robot.getMousePos().x, robot.getMousePos().y + 15);
+          robot.dragMouse(robot.getMousePos().x, robot.getMousePos().y + 12);
         } else {
-          robot.moveMouse(robot.getMousePos().x, robot.getMousePos().y + 15);
+          robot.moveMouse(robot.getMousePos().x, robot.getMousePos().y + 12);
         }
       }
     } else if (buttonEvent.action === "mouseLeftClick") {
