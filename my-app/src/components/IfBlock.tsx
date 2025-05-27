@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-
 interface IfBlockProps {
   elements: { id: number; label: string }[]; // Array of dropped elements
 }
@@ -10,14 +9,14 @@ export default function IfBlock({ elements }: IfBlockProps) {
     <div className="relative w-full bg-[#f0f0f0] rounded p-2 border border-black">
       <div className="flex items-center justify-center space-x-4">
         <span className="font-bold">if</span>
-        <select className="w-16 h-6 bg-gray-300 rounded-full text-center">
+        <select className="w-16 h-10 bg-gray-300 rounded-full text-center">
           {elements.map((element) => (
-            <option key={element.id} value={element.id}>
+            <option key={element.id} value={element.id} style={{ height: "40px" }}>
               {element.label}
             </option>
           ))}
         </select>
-        <select className="w-20 h-6 bg-gray-300 rounded text-center">
+        <select className="w-20 h-10 bg-gray-300 rounded text-center">
           <option value=""></option>
           <option value="click">is clicked</option>
           <option value="hover" disabled>
@@ -38,14 +37,14 @@ export default function IfBlock({ elements }: IfBlockProps) {
         </select>
         {/* <div className="w-20 h-6 bg-gray-300 rounded" /> */}
         <span className="font-bold">then</span>
-        <select className="w-16 h-6 bg-gray-300 rounded-full text-center">
+        <select className="w-16 h-10 bg-gray-300 rounded-full text-center">
           {elements.map((element) => (
             <option key={element.id} value={element.id}>
               {element.label}
             </option>
           ))}
         </select>
-        <select className="w-20 h-6 bg-gray-300 rounded text-center">
+        <select className="w-20 h-10 bg-gray-300 rounded text-center">
           <option value=""></option>
           <option value="width">changed color</option>
           <option value="hidden" disabled>

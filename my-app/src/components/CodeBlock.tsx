@@ -43,9 +43,9 @@ export default function CodeBlock({ elements, selectedElement }: CodeBlockProps)
       setShowHtml(!showHtml);
     };
   return (
-    <div className="flex flex-col items-center space-y-4 bg-primary p-6 h-1/2 overflow-y-auto">
+    <div className="flex flex-col items-center space-y-4 bg-primary pt-6 h-1/2 overflow-y-auto">
       <div className="flex flex-row items-center space-x-4 overflow-x-auto">
-        <p className="text-md text-white">Logic</p>
+        <p className="text-lg text-white">Logic</p>
         {logicOptions.map((option, i) => (
           <Options key={i} option={option} onClick={handleOptionClick} />
         ))}
@@ -53,7 +53,7 @@ export default function CodeBlock({ elements, selectedElement }: CodeBlockProps)
       {selectedOption && (
         <div className="flex flex-col items-center space-y-4">
           <IfBlock elements={elements} />
-          <Button className="bg-dark text-md" onClick={handleHTMLShow}>
+          <Button className="bg-dark text-md w-[150px] h-[100px]" onClick={handleHTMLShow}>
             Show HTML
           </Button>
         </div>
